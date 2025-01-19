@@ -1,85 +1,48 @@
-name: Build for Multiple Platforms
+name: Build EXE
 
 on:
   push:
     branches:
-      - main  # או כל סניף אחר שאתה רוצה
+      - main
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          
-      - name: Build EXE using PyInstaller (Windows)
-        run: |
-          pyinstaller --onefile --distpath dist/windows --workpath build/windows main.py
-
-      - name: Upload EXE artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: windows-exe
-          path: dist/windows/main.exe
-
-  build-linux:
+  build:
     runs-on: ubuntu-latest
     steps:
+      # שלב 1: הורדת הקבצים מהמאגר
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
+      # שלב 2: הגדרת סביבת Python
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.10'
-          
+
+      # שלב 3: התקנת התלויות
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          
-      - name: Build binary using PyInstaller (Linux)
-        run: |
-          pyinstaller --onefile --distpath dist/linux --workpath build/linux main.py
 
-      - name: Upload Linux binary artifact
+      # שלב 4: בדיקת מיקום קבצים
+      - name: Check file existence
+        run: |
+          echo "Current Directory:"
+          pwd
+          echo "Files in directory:"
+          ls -alh
+          echo "Does main.py exist?"
+          ls main.py || echo "main.py not found!"
+
+      # שלב 5: בניית הקובץ ל-EXE
+      - name: Build executable with PyInstaller
+        run: |
+          pyinstaller --onefile main.py
+
+      # שלב 6: שמירת הקובץ שנבנה כארטיפקט
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: linux-bin
-          path: dist/linux/main
-
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          
-      - name: Build .app using PyInstaller (macOS)
-        run: |
-          pyinstaller --onefile --distpath dist/macos --workpath build/macos main.py
-
-      - name: Upload macOS .app artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: macos-app
-          path: dist/macos/main.app
+          name: main-exe
+          path: dist/main
