@@ -9,38 +9,35 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # שלב 1: הורדת הקבצים מהמאגר
+      # הורדת קוד
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # שלב 2: הגדרת סביבת Python
+      # התקנת Python
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.10'
 
-      # שלב 3: התקנת התלויות
+      # התקנת תלויות
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # שלב 4: בדיקת מיקום קבצים
-      - name: Check file existence
+      # בדיקת קבצים במאגר
+      - name: Check files in repository
         run: |
-          echo "Current Directory:"
+          echo "Current directory:"
           pwd
           echo "Files in directory:"
-          ls -alh
-          echo "Does main.py exist?"
-          ls main.py || echo "main.py not found!"
+          ls -l
 
-      # שלב 5: בניית הקובץ ל-EXE
+      # בניית קובץ EXE
       - name: Build executable with PyInstaller
-        run: |
-          pyinstaller --onefile main.py
+        run: pyinstaller --onefile main.py
 
-      # שלב 6: שמירת הקובץ שנבנה כארטיפקט
+      # העלאת הקובץ שנוצר
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
