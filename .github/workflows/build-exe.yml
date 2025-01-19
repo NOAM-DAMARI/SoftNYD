@@ -26,7 +26,7 @@ jobs:
           pip install -r requirements.txt
 
       # שלב 4: בדיקת קבצים
-      - name: Check files in repository
+      # - name: Check files in repository
         run: |
           echo "Current directory:"
           pwd
