@@ -1,4 +1,4 @@
-name: Build EXE
+name: Build EXE with PyInstaller
 
 on:
   push:
@@ -9,23 +9,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # הורדת קוד
+      # שלב 1: הורדת הקוד
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # התקנת Python
+      # שלב 2: התקנת Python
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      # התקנת תלויות
+      # שלב 3: התקנת תלויות
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # בדיקת קבצים במאגר
+      # שלב 4: בדיקת קבצים
       - name: Check files in repository
         run: |
           echo "Current directory:"
@@ -33,13 +33,13 @@ jobs:
           echo "Files in directory:"
           ls -l
 
-      # בניית קובץ EXE
+      # שלב 5: בנייה ל-EXE
       - name: Build executable with PyInstaller
         run: pyinstaller --onefile main.py
 
-      # העלאת הקובץ שנוצר
+      # שלב 6: העלאת קובץ EXE שנבנה
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: main-exe
           path: dist/main
