@@ -8,38 +8,39 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       # שלב 1: הורדת הקוד
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       # שלב 2: התקנת Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: 3.10
 
-      # שלב 3: התקנת תלויות
+      # שלב 3: התקנת התלויות
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       # שלב 4: בדיקת קבצים
-      # - name: Check files in repository
+      - name: Check repository files
         run: |
           echo "Current directory:"
           pwd
           echo "Files in directory:"
           ls -l
 
-      # שלב 5: בנייה ל-EXE
+      # שלב 5: יצירת EXE
       - name: Build executable with PyInstaller
-        run: pyinstaller --onefile main.py
+        run: pyinstaller --onefile main.py # עדכן את הנתיב אם הקובץ לא בשורש
 
-      # שלב 6: העלאת קובץ EXE שנבנה
+      # שלב 6: העלאת הקובץ
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: main-exe
+          name: exe-file
           path: dist/main
